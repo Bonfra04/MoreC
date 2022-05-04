@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make",
+            "type": "shell",
+            "linux": {
+                "command": "make PLATFORM=LINUX"
+            },
+            "windows": {
+                "command": "make PLATFORM=WINDOWS"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "clear": true,
+                "close": false,
+                "echo": true,
+                "focus": true,
+                "reveal": "always"
+            }
+        }
+    ],
+}

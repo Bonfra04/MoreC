@@ -183,3 +183,10 @@ void vector_erase_range(vector_t* vector, iterator_t first, iterator_t last);
  * @param[in] vector vector to clear
  */
 void vector_clear(vector_t* vector);
+
+/**
+ * @brief swaps the contents of two vectors
+ * @param[in] vector1 first vector to swap
+ * @param[in] vector2 second vector to swap
+ */
+void vector_swap(vector_t* vector1, vector_t* vector2);

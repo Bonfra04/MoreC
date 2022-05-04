@@ -1,0 +1,14 @@
+{
+    "files.exclude": {
+        "bin/": true,
+        "bin-int/": true,
+        "Makefile": true,
+        "linux.mk": true,
+        "windows.mk": true,
+        ".gitignore": true,
+    },
+    "cSpell.words": [
+        "cwstr",
+        "subragne"
+    ]
+}

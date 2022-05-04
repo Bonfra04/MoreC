@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug MoreC",
+            "type": "cppdbg",
+            "request": "launch",
+            "linux": {
+                "program": "${workspaceFolder}/bin/demo.elf",
+            },
+            "windows": {
+                "program": "${workspaceFolder}/bin/demo.exe",
+            },
+            "cwd": "${workspaceFolder}",
+            "MIMode": "gdb",
+            "preLaunchTask": "make"
+        }
+    ]
+}

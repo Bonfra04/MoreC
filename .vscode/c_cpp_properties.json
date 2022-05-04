@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "MoreC",
+            "includePath": [
+                "${workspaceFolder}/include/",
+                "${workspaceFolder}/src/"
+            ]
+        }
+    ],
+    "version": 4
+}
