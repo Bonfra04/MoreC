@@ -235,6 +235,8 @@ void vector_clear(vector_t* vector)
 
 void vector_swap(vector_t* vector1, vector_t* vector2)
 {
+    assert(vector1->stride == vector2->stride);
+
     vector_t temp = *vector1;
     *vector1 = *vector2;
     *vector2 = temp;

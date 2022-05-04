@@ -49,6 +49,20 @@ iterator_t list_begin(const list_t* list);
 iterator_t list_end(const list_t* list);
 
 /**
+ * @brief returns a reverse iterator to the beginning of the list
+ * @param[in] list list to iterate
+ * @return reverse iterator to the beginning of the list
+ */
+iterator_t list_rbegin(const list_t* list);
+
+/**
+ * @brief returns a reverse iterator to the end of the list
+ * @param[in] list list to iterate
+ * @return reverse iterator to the end of the list
+ */
+iterator_t list_rend(const list_t* list);
+
+/**
  * @brief checks if the list is empty
  * @param[in] list list to check
  * @return true if the list is empty, false otherwise
@@ -147,3 +161,104 @@ void list_unique(list_t* list);
  * @param[in] predicate function that returns true if the two elements are equal
  */
 void list_unique_pred(list_t* list, bool (*predicate)(const void*, const void*));
+
+/**
+ * @brief swaps the contents of two lists
+ * @param[in] list1 first list to swap
+ * @param[in] list2 second list to swap
+ */
+void list_swap(list_t* list1, list_t* list2);
+
+/**
+ * @brief assigns new contents to the list, replacing its current contents, and modifying its size accordingly
+ * @param[in] list list to assign new contents to
+ * @param[in] begin iterator to the beginning of the new contents
+ * @param[in] end iterator to the end of the new contents
+ */
+void list_assign_range(list_t* list, iterator_t first, iterator_t last);
+
+/**
+ * @brief assigns new contents to the list, replacing its current contents, and modifying its size accordingly
+ * @param[in] list list to assign new contents to
+ * @param[in] n number of elements to assign
+ * @param[in] val_ptr pointer to the value to assign
+ */
+void __list_assign_fill(list_t* list, size_t n, const void* val_ptr);
+#define list_assign_fill(list, n, value) { typeof(value) __tmp = value; __list_assign_fill(list, n, &__tmp); }
+
+/**
+ * @brief removes an element from a list
+ * @param[in] list list to remove the element from
+ * @param[in] position iterator to the element to remove
+ */
+void list_erase(list_t* list, iterator_t position);
+
+/**
+ * @brief removes a range of elements from a list
+ * @param[in] list list to remove the elements from
+ * @param[in] first iterator to the first element in the range to remove
+ * @param[in] last iterator to the end of the range to remove
+ */
+void list_erase_range(list_t* list, iterator_t first, iterator_t last);
+
+/**
+ * @brief extends the list inserting a new element at the specified position
+ * @param[in] list list to extend
+ * @param[in] position iterator to the position to insert the new element
+ * @param[in] val_ptr a pointer to the value to insert
+ */
+void __list_insert_single(list_t* list, iterator_t position, const void* val_ptr);
+#define list_insert_single(list, position, value) { typeof(value) __tmp = value; __list_insert_single(list, position, &__tmp); }
+
+/**
+ * @brief extends the list inserting n new elements at the specified position
+ * @param[in] list list to extend
+ * @param[in] position iterator to the position to insert the new element
+ * @param[in] n number of elements to insert
+ * @param[in] val_ptr a pointer to the value to insert
+ */
+void __list_insert_fill(list_t* list, iterator_t position, size_t n, const void* val_ptr);
+#define list_insert_fill(list, position, n, value) { typeof(value) __tmp = value; __list_insert_fill(list, position, n, &__tmp); }
+
+/**
+ * @brief extends the list inserting a range of elements at the specified position
+ * @param[in] list list to extend
+ * @param[in] position iterator to the position to insert the new element
+ * @param[in] first iterator to the first element in the range to insert
+ * @param[in] last iterator to the end of the range to insert
+ */
+void list_insert_range(list_t* list, iterator_t position, iterator_t first, iterator_t last);
+
+/**
+ * @brief resizes a list so that it contains n elements
+ * @param[in] list list to resize
+ * @param[in] length new length
+ */
+void list_resize(list_t* list, size_t length);
+
+/**
+ * @brief transfers the contents of the source list to the destination list at the specified position
+ * @param[in] list list to transfer the contents to
+ * @param[in] position iterator to the position to insert the new elements
+ * @param[in] source source list to transfer the contents from
+ */
+void list_splice_entire(list_t* list, iterator_t position, list_t* source);
+
+/**
+ * @brief transfers the contents of the source list to the destination list at the specified position
+ * @param[in] list list to transfer the contents to
+ * @param[in] position iterator to the position to insert the new elements
+ * @param[in] source source list to transfer the contents from
+ * @param[in] it iterator to the single element to transfer
+ */
+void list_splice_single(list_t* list, iterator_t position, list_t* source, iterator_t it);
+
+/**
+ * @brief transfers the contents of the source list to the destination list at the specified position
+ * @param[in] list list to transfer the contents to
+ * @param[in] position iterator to the position to insert the new elements
+ * @param[in] first iterator to the first element in the range to transfer
+ * @param[in] last iterator to the end of the range to transfer
+ */
+void list_splice_range(list_t* list, iterator_t position, iterator_t first, iterator_t last);
+
