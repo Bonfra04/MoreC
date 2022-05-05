@@ -77,6 +77,8 @@ void iterator_test_routine() {
     printf("-=-=-=-=-=-=-=- ITERATOR CHECKS END -=-=-=-=-=-=-=-\n");
 }
 
+// -=-=-=-=-=-=-=-= MODIFIERS TEST =-=-=-=-=-=-=-=-
+
 void test_erase() {
     list_t spaghetto = init_list(50);
 
@@ -207,7 +209,7 @@ void test_insert_range() {
 
 void test_swap() {
     list_t spaghetto = init_list(50);
-    list_t panzerkampfwagen;
+    list_t panzerkampfwagen = list(int);
     for(int i = 99; i >= 0; i--) {
         list_push_back(&panzerkampfwagen, i);
     }
@@ -238,35 +240,119 @@ void test_clear() {
     assert(list_size(&spaghetto) == 0);
 }
 
+// -=-=-=-=-=-=-=-= MODIFIERS TEST =-=-=-=-=-=-=-=-
+
+// -=-=-=-=-=-=-=-= OPERATIONS TEST =-=-=-=-=-=-=-=-
+
+void test_splice_entire() {
+    list_t spaghetto = init_list(50);
+    list_t oii2022 = list(int);
+    for(int i = 98; i >= 0; i -= 2) {
+        list_push_back(&oii2022, i);
+    }
+
+    iterator_t it = list_begin(&spaghetto);
+    iterator_advance(&it, 30);
+
+    list_splice_entire(&spaghetto, it, &oii2022);
+
+    assert(list_size(&spaghetto) == 100);
+    assert(list_size(&oii2022) == 0);
+
+    iterator_t medusa = list_begin(&spaghetto);
+    iterator_advance(&medusa, 30);
+    assert(iterator_get(&medusa, int) == 98);
+
+    assert(list_back(int, &spaghetto) == 49);
+}
+
+void test_splice_single() {
+    list_t spaghetto = init_list(50);
+    list_t rumeno = list(int);
+
+    for(int i = 0; i < 100; i += 2) {
+        list_push_back(&rumeno, i);
+    }
+
+    iterator_t src_it = list_begin(&rumeno);
+    iterator_advance(&src_it, 30);
+
+    iterator_t dest_it = list_begin(&spaghetto);
+    iterator_advance(&dest_it, 5);
+
+    list_splice_single(&spaghetto, dest_it, &rumeno, src_it);
+
+    assert(list_size(&spaghetto) == 51);
+    assert(list_size(&rumeno) == 49);
+
+    iterator_t apollo = list_begin(&spaghetto);
+    iterator_advance(&apollo, 5);
+    assert(iterator_get(&apollo, int) == 60);
+}
+
+void test_splice_range() {
+    list_t spaghetto = init_list(50);
+    list_t rumeno = list(int);
+    for(int i = 0; i < 100; i += 2) {
+        list_push_back(&rumeno, i);
+    }
+
+    iterator_t src_beg = list_begin(&rumeno);
+    iterator_advance(&src_beg, 30); // 60
+
+    iterator_t src_end = list_begin(&rumeno);
+    iterator_advance(&src_end, 40); // 80
+
+    iterator_t dest_it = list_begin(&spaghetto);
+    iterator_advance(&dest_it, 5);
+
+    // WRONG IMPLEMENTATION OF RANGE!
+    // MISSING SOURCE LIST PARAMETER
+}
+
+// -=-=-=-=-=-=-=-= OPERATIONS TEST =-=-=-=-=-=-=-=-
+
 /*
 LISTS
 
 TO-FIX:
-- assign
-    > Starts overwriting from the last element and not the first.
-    > Doesn't modify the size accordingly as said by STL.
+Modifiers:
+    - assign
+        > Starts overwriting from the last element and not the first.
+        > Doesn't modify the size accordingly as said by STL.
 
-- erase (range)
-    > leads to SIGSEGV (bruh?)
+    - erase (range)
+        > leads to SIGSEGV (bruh?)
 
-- insert (single)
-    > Overwrites element at position <it> instead of inserting the element before position <it>
+    - insert (single)
+        > Overwrites element at position <it> instead of inserting the element before position <it>
 
-- insert (fill)
-    > Only overwrites element at position <it> instead of inserting <n> elements before position <it>
+    - insert (fill)
+        > Only overwrites element at position <it> instead of inserting <n> elements before position <it>
 
-- insert (range)
-    > Only overwrites element at position <it> with the second-last element of the range instead of inserting the range
+    - insert (range)
+        > Only overwrites element at position <it> with the second-last element of the range instead of inserting the range
 
-- swap
-    > bruh why does this asertion even get triggered?
-    ./src/morec/list.c:291: list_swap: Assertion `list1->elem_size == list2->elem_size' failed.
+    - swap
+        > bruh why does this asertion even get triggered?
+        ./src/morec/list.c:291: list_swap: Assertion `list1->elem_size == list2->elem_size' failed.
 
-- resize
-    > leads to SIGSEGV (bruh?)
+    - resize
+        > leads to SIGSEGV (bruh?)
 
-- clear
-    > leads to SIGSEGV (bruh?)
+    - clear
+        > leads to SIGSEGV (bruh?)
+
+Operations:
+    - splice (entire)
+        > Doesn't modify the size of the destination list (can't proceed with other tests)
+    
+    - splice (single)
+        > Doesn't modify the size of the destination list (can't proceed with other tests)
+
+    - splice (range)
+        > Missing source list parameter...
+
 */
 
 int main() {
@@ -283,7 +369,6 @@ int main() {
     test_pop_back();
     */
     // -=-=-=-=-=-=-=- POSITIVE TESTS -=-=-=-=-=-=-=-
-    
     // -=-=-=-=-=-=-=- NEGATIVE TESTS -=-=-=-=-=-=-=-
     /*
     test_assign_fill();
@@ -300,6 +385,10 @@ int main() {
     test_resize();
 
     test_clear();
+
+    test_splice_entire();
+    test_splice_single();
+    test_splice_range();
     */
     // -=-=-=-=-=-=-=- NEGATIVE TESTS -=-=-=-=-=-=-=-
 }
