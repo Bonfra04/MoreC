@@ -10,7 +10,11 @@ static void list_iterator_next(iterator_t* it)
 
     list_t* list = it->structure_data;
     list_node_t* node = (list_node_t*)((uint8_t*)it->position - sizeof(list_node_t));
-    it->position = node->next ? (uint8_t*)node->next + sizeof(list_node_t) : NULL;
+
+    if(node->next)
+        it->position = (uint8_t*)node->next + sizeof(list_node_t);
+    else
+        it->position = NULL;
 }
 
 static void list_iterator_prev(iterator_t* it)
@@ -19,14 +23,19 @@ static void list_iterator_prev(iterator_t* it)
  
     list_t* list = it->structure_data;
     list_node_t* node = (list_node_t*)((uint8_t*)it->position - sizeof(list_node_t));
-    it->position = node->prev ? (uint8_t*)node->prev + sizeof(list_node_t) : NULL;
+
+    if(node->prev)
+        it->position = (uint8_t*)node->prev + sizeof(list_node_t);
+    else
+        it->position = NULL;
 }
 
 list_t __list_create(size_t elem_size)
 {
     list_t list = {
         .elem_size = elem_size,
-        .head = NULL
+        .head = NULL,
+        .tail = NULL
     };
     return list;
 }
@@ -44,7 +53,7 @@ iterator_t list_begin(const list_t* list)
 
 iterator_t list_end(const list_t* list)
 {
-    void* ptr = (uint8_t*)list->tail + sizeof(list_node_t);
+    void* ptr = (uint8_t*)list->tail + sizeof(list_node_t) * 2 + list->elem_size;
     return iterator(list_iterator_next, list_iterator_prev, ptr, (void*)list);
 }
 
@@ -164,10 +173,12 @@ void list_clear(list_t* list)
     list_node_t* node = list->tail;
     while (node != NULL)
     {
-        list_node_t* next = node->next;
+        list_node_t* prev = node->prev;
         free(node);
-        node = next;
+        node = prev;
     }
+
+    list->head = list->tail = NULL;
 }
 
 void __list_remove(list_t* list, void* value_ptr)
@@ -303,11 +314,13 @@ void list_assign_range(list_t* list, iterator_t first, iterator_t last)
 {
     list_clear(list);
 
-    while(iterator_distance(&first, &last) != 0)
+    while(iterator_distance(&first, &last) > 0)
     {
         __list_push_back(list, __iterator_get(&first));
         iterator_advance(&first, 1);
     }
+
+    __list_push_back(list, __iterator_get(&first));
 }
 
 void __list_assign_fill(list_t* list, size_t n, const void* val_ptr)
@@ -360,8 +373,8 @@ void list_erase_range(list_t* list, iterator_t first, iterator_t last)
         else
             list->tail = prev;
 
-        free(node);
         iterator_advance(&first, 1);
+        free(node);
     }
 }
 
@@ -374,20 +387,14 @@ void __list_insert_single(list_t* list, iterator_t position, const void* val_ptr
 
     list_node_t* node = (uint8_t*)__iterator_get(&position) - sizeof(list_node_t);
     list_node_t* prev = node->prev;
-    list_node_t* next = node->next;
 
     new_node->prev = prev;
-    new_node->next = next;
+    new_node->next = node;
 
     if(prev != NULL)
         prev->next = new_node;
     else
         list->head = new_node;
-
-    if(next != NULL)
-        next->prev = new_node;
-    else
-        list->tail = new_node;
 }
 
 void __list_insert_fill(list_t* list, iterator_t position, size_t n, const void* val_ptr)
